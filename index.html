@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SoloUp — Suba de nível na vida real</title>
+<meta name="description" content="O SoloUp transforma treino, estudo e hábitos em missões diárias com XP, níveis e ranks. Comece no Rank E. Android, iPhone e PC. Pagamento único.">
+<meta name="theme-color" content="#030712">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SoloUp — Suba de nível na vida real">
+<meta property="og:description" content="Missões diárias, XP, ranks de E a S e Zona de Penalidade. A sua rotina vira um RPG.">
+<meta property="og:image" content="https://ivesgh0st.github.io/soloup/icon-512.png">
+<meta property="og:url" content="https://ivesgh0st.github.io/soloup/">
+<link rel="icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #030712;
+    --bg-2: #0a0f1d;
+    --panel: #0b1329;
+    --panel-2: #0e1a36;
+    --line: rgba(0, 210, 255, 0.18);
+    --line-strong: rgba(0, 210, 255, 0.45);
+    --cyan: #00d2ff;
+    --sky: #38bdf8;
+    --violet: #8b5cf6;
+    --gold: #ffd700;
+    --green: #4ade80;
+    --red: #ff003c;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --dim: #64748b;
+    --radius: 14px;
+    --display: 'Chakra Petch', system-ui, sans-serif;
+    --body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  /* grade de fundo, como uma tela do Sistema */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: -2;
+    background:
+      radial-gradient(900px 600px at 80% -10%, rgba(0, 210, 255, 0.12), transparent 60%),
+      radial-gradient(700px 500px at -10% 30%, rgba(139, 92, 246, 0.10), transparent 60%),
+      linear-gradient(rgba(0, 210, 255, 0.035) 1px, transparent 1px) 0 0 / 48px 48px,
+      linear-gradient(90deg, rgba(0, 210, 255, 0.035) 1px, transparent 1px) 0 0 / 48px 48px,
+      var(--bg);
+  }
+  a { color: inherit; }
+  img, svg { display: block; }
+  .wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+
+  /* ---------- tipografia do Sistema ---------- */
+  .sys {
+    font-family: var(--display);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    color: var(--cyan);
+  }
+  h1, h2, h3 { font-family: var(--display); line-height: 1.08; margin: 0; letter-spacing: 0.01em; }
+  h1 { font-size: clamp(2.5rem, 7vw, 4.6rem); font-weight: 700; text-transform: uppercase; }
+  h2 { font-size: clamp(1.9rem, 4.6vw, 3rem); font-weight: 700; text-transform: uppercase; }
+  h3 { font-size: 1.15rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  p { margin: 0; }
+  .lead { color: var(--muted); font-size: clamp(1.02rem, 2.2vw, 1.18rem); max-width: 60ch; }
+  .glow { color: var(--cyan); text-shadow: 0 0 24px rgba(0, 210, 255, 0.55); }
+  .gold { color: var(--gold); }
+
+  /* ---------- botões ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 15px 26px;
+    border-radius: 10px;
+    font-family: var(--display); font-weight: 700; font-size: 1rem;
+    letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+    border: 1px solid var(--cyan);
+    transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #00d2ff, #38bdf8);
+    color: #031018;
+    box-shadow: 0 0 0 1px rgba(0, 210, 255, .4), 0 8px 30px rgba(0, 210, 255, .35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(0, 210, 255, .6), 0 12px 40px rgba(0, 210, 255, .5); }
+  .btn-ghost { background: rgba(0, 210, 255, .06); color: var(--cyan); }
+  .btn-ghost:hover { background: rgba(0, 210, 255, .14); }
+  .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+  /* ---------- janela do Sistema (painel com cantos) ---------- */
+  .window {
+    position: relative;
+    background: linear-gradient(180deg, rgba(14, 26, 54, .92), rgba(10, 15, 29, .92));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 26px;
+    box-shadow: inset 0 0 40px rgba(0, 210, 255, .04);
+  }
+  .window::before, .window::after {
+    content: ''; position: absolute; width: 18px; height: 18px; border: 2px solid var(--cyan); opacity: .85;
+  }
+  .window::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; border-top-left-radius: var(--radius); }
+  .window::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; border-bottom-right-radius: var(--radius); }
+
+  /* ---------- navegação ---------- */
+  header.nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(3, 7, 18, .72);
+    border-bottom: 1px solid rgba(0, 210, 255, .08);
+  }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .brand span { font-family: var(--display); font-weight: 700; letter-spacing: .18em; font-size: 1.15rem; }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: .92rem; font-weight: 500; }
+  .nav-links a:hover { color: var(--text); }
+  .nav .btn { padding: 10px 18px; font-size: .85rem; }
+  @media (max-width: 820px) { .nav-links { display: none; } }
+
+  section { padding: 96px 0; position: relative; }
+  .section-head { display: grid; gap: 14px; margin-bottom: 48px; max-width: 760px; }
+  .center { text-align: center; margin-inline: auto; justify-items: center; }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 72px 0 96px; }
+  .hero .wrap { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+  .hero-copy { display: grid; gap: 24px; }
+  .alert-chip {
+    display: inline-flex; align-items: center; gap: 10px; width: fit-content;
+    padding: 8px 14px; border-radius: 999px;
+    border: 1px solid var(--line-strong); background: rgba(0, 210, 255, .07);
+  }
+  .alert-chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px var(--cyan); animation: pulse 1.6s ease-in-out infinite; }
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero-meta { display: flex; gap: 18px; flex-wrap: wrap; color: var(--dim); font-size: .9rem; }
+  .hero-meta b { color: var(--muted); font-weight: 600; }
+  @media (max-width: 920px) { .hero .wrap { grid-template-columns: 1fr; } }
+
+  /* ---------- celular com o Painel do Caçador ---------- */
+  .phone-stage { position: relative; display: grid; place-items: center; padding: 96px 0 20px; }
+  .phone-stage::before {
+    content: ''; position: absolute; width: 420px; height: 420px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 210, 255, .22), rgba(139, 92, 246, .10) 45%, transparent 70%);
+    filter: blur(10px); z-index: -1;
+  }
+  .phone {
+    width: 312px; max-width: 100%;
+    border-radius: 38px; padding: 12px;
+    background: linear-gradient(160deg, #1b2440, #070b16);
+    border: 1px solid rgba(148, 163, 184, .18);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .6), 0 0 60px rgba(0, 210, 255, .12);
+  }
+  .screen { border-radius: 28px; background: var(--bg); padding: 20px 16px 18px; display: grid; gap: 12px; overflow: hidden; }
+  .screen .sys { text-align: center; font-size: .66rem; }
+  .hunter { display: flex; justify-content: space-between; align-items: center; }
+  .hunter .name { font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: .06em; }
+  .hunter .title { color: var(--muted); font-size: .72rem; }
+  .rank-badge {
+    width: 50px; height: 50px; border-radius: 12px; display: grid; place-items: center;
+    font-family: var(--display); font-weight: 700; font-size: 1.6rem; color: var(--gold);
+    border: 1px solid rgba(255, 215, 0, .5); background: rgba(255, 215, 0, .08);
+    box-shadow: 0 0 18px rgba(255, 215, 0, .18);
+  }
+  .rank-badge small { display: block; font-size: .5rem; letter-spacing: .2em; color: var(--muted); margin-top: -10px; }
+  .xp { display: grid; gap: 6px; }
+  .xp-row { display: flex; justify-content: space-between; font-size: .7rem; color: var(--muted); font-family: var(--display); letter-spacing: .08em; }
+  .bar { height: 9px; border-radius: 99px; background: #111a33; overflow: hidden; border: 1px solid rgba(0, 210, 255, .15); }
+  .bar > i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--cyan), var(--violet)); box-shadow: 0 0 14px rgba(0, 210, 255, .6); transition: width 1.6s cubic-bezier(.2, .8, .2, 1); }
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .stat { text-align: center; padding: 7px 0; border-radius: 9px; background: var(--panel); border: 1px solid rgba(0, 210, 255, .1); }
+  .stat b { display: block; font-family: var(--display); font-size: .95rem; }
+  .stat span { font-size: .58rem; color: var(--dim); letter-spacing: .1em; }
+  .streak { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; border-radius: 10px; background: rgba(255, 215, 0, .06); border: 1px solid rgba(255, 215, 0, .2); font-size: .74rem; }
+  .streak b { color: var(--gold); font-family: var(--display); }
+  .quest { padding: 11px 12px; border-radius: 11px; background: var(--panel); border: 1px solid rgba(0, 210, 255, .12); display: grid; gap: 6px; }
+  .quest .q-top { display: flex; justify-content: space-between; gap: 8px; }
+  .quest .q-title { font-size: .76rem; font-weight: 700; }
+  .quest .q-xp { font-family: var(--display); font-size: .7rem; color: var(--gold); white-space: nowrap; }
+  .quest .q-cat { font-size: .58rem; color: var(--cyan); letter-spacing: .1em; font-family: var(--display); }
+  .quest .q-prog { display: flex; justify-content: space-between; align-items: center; font-size: .64rem; color: var(--muted); }
+  .quest.done { border-color: rgba(74, 222, 128, .35); }
+  .quest.done .q-prog b { color: var(--green); font-family: var(--display); letter-spacing: .1em; }
+  .mini-btn { font-family: var(--display); font-size: .6rem; letter-spacing: .1em; padding: 4px 9px; border-radius: 6px; color: var(--bg); background: var(--cyan); font-weight: 700; }
+
+  .toast {
+    position: absolute; right: 0; top: 0; width: 230px;
+    padding: 14px 16px; border-radius: 12px;
+    background: rgba(10, 15, 29, .95); border: 1px solid var(--line-strong);
+    box-shadow: 0 0 30px rgba(0, 210, 255, .25);
+    animation: float 4.5s ease-in-out infinite;
+  }
+  .toast .sys { font-size: .62rem; margin-bottom: 4px; }
+  .toast p { font-family: var(--display); font-weight: 700; font-size: 1.05rem; line-height: 1.2; }
+  .toast small { color: var(--muted); font-size: .72rem; }
+  @media (max-width: 520px) { .toast { width: 210px; } .phone-stage { padding-top: 104px; } }
+
+  /* ---------- problema ---------- */
+  .contrast { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .contrast .window h3 { margin-bottom: 14px; }
+  .contrast ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+  .contrast li { display: flex; gap: 12px; color: var(--muted); }
+  .contrast li::before { flex: none; font-family: var(--display); font-weight: 700; }
+  .contrast .bad li::before { content: '✕'; color: var(--red); }
+  .contrast .good li::before { content: '✓'; color: var(--green); }
+  .contrast .bad { border-color: rgba(255, 0, 60, .2); }
+  .contrast .bad::before, .contrast .bad::after { border-color: var(--red); }
+  @media (max-width: 760px) { .contrast { grid-template-columns: 1fr; } }
+
+  /* ---------- como funciona ---------- */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; counter-reset: step; }
+  .step { display: grid; gap: 12px; align-content: start; }
+  .step .num { font-family: var(--display); font-weight: 700; font-size: 2.6rem; color: transparent; -webkit-text-stroke: 1px var(--cyan); line-height: 1; }
+  .step p { color: var(--muted); }
+  .goals { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 4px; }
+  .goal { padding: 9px 10px; border-radius: 10px; background: rgba(0, 210, 255, .05); border: 1px solid rgba(0, 210, 255, .12); font-size: .78rem; }
+  .goal b { display: block; font-family: var(--display); font-size: .74rem; letter-spacing: .06em; color: var(--text); }
+  .goal span { color: var(--dim); }
+  @media (max-width: 900px) { .steps { grid-template-columns: 1fr; } }
+
+  /* ---------- escada de ranks ---------- */
+  .ladder { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; align-items: end; }
+  .rung {
+    text-align: center; padding: 18px 8px 16px; border-radius: 12px;
+    background: var(--panel); border: 1px solid rgba(0, 210, 255, .12);
+    display: grid; gap: 6px; position: relative; align-content: end;
+  }
+  .rung .letter { font-family: var(--display); font-weight: 700; font-size: 2.4rem; line-height: 1; }
+  .rung .lvl { font-family: var(--display); font-size: .7rem; letter-spacing: .14em; color: var(--dim); }
+  .rung .ttl { font-size: .78rem; color: var(--muted); line-height: 1.3; }
+  .rung:nth-child(1) { min-height: 150px; } .rung:nth-child(1) .letter { color: #94a3b8; }
+  .rung:nth-child(2) { min-height: 170px; } .rung:nth-child(2) .letter { color: #4ade80; }
+  .rung:nth-child(3) { min-height: 190px; } .rung:nth-child(3) .letter { color: #38bdf8; }
+  .rung:nth-child(4) { min-height: 210px; } .rung:nth-child(4) .letter { color: #8b5cf6; }
+  .rung:nth-child(5) { min-height: 230px; } .rung:nth-child(5) .letter { color: #f97316; }
+  .rung:nth-child(6) { min-height: 255px; border-color: rgba(255, 215, 0, .5); box-shadow: 0 0 40px rgba(255, 215, 0, .12); }
+  .rung:nth-child(6) .letter { color: var(--gold); text-shadow: 0 0 24px rgba(255, 215, 0, .6); }
+  .rung.you::after {
+    content: 'VOCÊ COMEÇA AQUI'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    white-space: nowrap; font-family: var(--display); font-size: .6rem; letter-spacing: .12em;
+    padding: 3px 8px; border-radius: 99px; background: var(--cyan); color: var(--bg); font-weight: 700;
+  }
+  @media (max-width: 900px) { .ladder { grid-template-columns: repeat(3, 1fr); } .rung { min-height: 0 !important; } }
+
+  /* ---------- recursos ---------- */
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .feature { display: grid; gap: 10px; align-content: start; transition: border-color .2s ease, transform .2s ease; }
+  .feature:hover { border-color: var(--line-strong); transform: translateY(-3px); }
+  .feature .ico { width: 44px; height: 44px; border-radius: 11px; display: grid; place-items: center; font-size: 1.3rem; background: rgba(0, 210, 255, .08); border: 1px solid rgba(0, 210, 255, .2); }
+  .feature p { color: var(--muted); font-size: .95rem; }
+  @media (max-width: 960px) { .features { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 620px) { .features { grid-template-columns: 1fr; } }
+
+  /* ---------- zona de penalidade ---------- */
+  .penalty-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .penalty {
+    border-color: rgba(255, 0, 60, .45);
+    background: linear-gradient(180deg, rgba(60, 0, 14, .55), rgba(10, 15, 29, .95));
+    box-shadow: 0 0 60px rgba(255, 0, 60, .15), inset 0 0 40px rgba(255, 0, 60, .06);
+    display: grid; gap: 14px; text-align: center;
+  }
+  .penalty::before, .penalty::after { border-color: var(--red); }
+  .penalty .sys { color: var(--red); font-size: .8rem; animation: blink 1.2s steps(2, start) infinite; }
+  .penalty h3 { color: #fff; font-size: 1.5rem; text-shadow: 0 0 20px rgba(255, 0, 60, .7); }
+  .penalty .quote { font-family: var(--display); color: #fecdd3; letter-spacing: .08em; }
+  .penalty ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; text-align: left; }
+  .penalty li { padding: 10px 12px; border-radius: 9px; background: rgba(255, 0, 60, .08); border: 1px solid rgba(255, 0, 60, .2); font-size: .92rem; }
+  @media (max-width: 860px) { .penalty-wrap { grid-template-columns: 1fr; } }
+
+  /* ---------- plataformas ---------- */
+  .platforms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .platform { text-align: center; display: grid; gap: 8px; justify-items: center; }
+  .platform .big { font-size: 2rem; }
+  .platform p { color: var(--muted); font-size: .92rem; }
+  .trust { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 26px; margin-top: 28px; color: var(--muted); font-size: .92rem; }
+  .trust span::before { content: '◆ '; color: var(--cyan); }
+  @media (max-width: 760px) { .platforms { grid-template-columns: 1fr; } }
+
+  /* ---------- comunidade ---------- */
+  .community { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; }
+  .channels { display: grid; gap: 8px; }
+  .channel { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; background: var(--panel); border: 1px solid rgba(88, 101, 242, .25); color: var(--muted); font-size: .92rem; }
+  .channel b { color: var(--text); font-weight: 600; }
+  .btn-discord { background: #5865f2; border-color: #5865f2; color: #fff; }
+  .btn-discord:hover { background: #4752c4; }
+  @media (max-width: 860px) { .community { grid-template-columns: 1fr; } }
+
+  /* ---------- oferta ---------- */
+  .offer { max-width: 560px; margin-inline: auto; padding: 36px 32px; display: grid; gap: 22px; border-color: var(--line-strong); box-shadow: 0 0 80px rgba(0, 210, 255, .12), inset 0 0 50px rgba(0, 210, 255, .05); }
+  .offer .price { display: flex; align-items: baseline; justify-content: center; gap: 8px; }
+  .offer .price .cur { font-family: var(--display); font-size: 1.4rem; color: var(--muted); }
+  .offer .price .val { font-family: var(--display); font-weight: 700; font-size: 4rem; line-height: 1; }
+  .offer .note { text-align: center; color: var(--muted); font-size: .95rem; }
+  .offer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+  .offer li { display: flex; gap: 12px; }
+  .offer li::before { content: '✓'; color: var(--green); font-weight: 700; flex: none; }
+  .offer .btn { width: 100%; padding: 18px; font-size: 1.05rem; }
+  .how-buy { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .how-buy div { padding: 12px 10px; border-radius: 10px; background: rgba(0, 210, 255, .05); border: 1px solid rgba(0, 210, 255, .12); font-size: .82rem; color: var(--muted); text-align: center; }
+  .how-buy b { display: block; font-family: var(--display); color: var(--cyan); font-size: .72rem; letter-spacing: .12em; }
+  .guarantee { display: flex; gap: 14px; align-items: center; padding: 14px 16px; border-radius: 12px; background: rgba(74, 222, 128, .06); border: 1px solid rgba(74, 222, 128, .25); font-size: .92rem; color: var(--muted); }
+  .guarantee strong { color: var(--text); }
+  .guarantee .seal { font-size: 1.7rem; }
+  @media (max-width: 520px) { .how-buy { grid-template-columns: 1fr; } .offer { padding: 30px 20px; } }
+
+  /* ---------- FAQ ---------- */
+  .faq { max-width: 780px; margin-inline: auto; display: grid; gap: 12px; }
+  .faq details { border-radius: 12px; background: var(--panel); border: 1px solid rgba(0, 210, 255, .12); padding: 0 20px; }
+  .faq details[open] { border-color: var(--line-strong); }
+  .faq summary { cursor: pointer; list-style: none; padding: 18px 0; font-weight: 600; display: flex; justify-content: space-between; gap: 16px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; font-family: var(--display); color: var(--cyan); font-size: 1.3rem; line-height: 1; transition: transform .2s ease; }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq details p { color: var(--muted); padding-bottom: 18px; }
+
+  /* ---------- CTA final ---------- */
+  .final { text-align: center; display: grid; gap: 24px; justify-items: center; padding: 64px 24px; }
+  .final h2 { max-width: 16ch; }
+
+  footer { border-top: 1px solid rgba(0, 210, 255, .08); padding: 40px 0 48px; color: var(--dim); font-size: .86rem; }
+  footer .wrap { display: grid; gap: 18px; }
+  footer .row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  footer nav { display: flex; gap: 20px; flex-wrap: wrap; }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+  footer .disclaimer { font-size: .78rem; max-width: 90ch; }
+
+  /* ---------- animações ---------- */
+  @keyframes pulse { 50% { opacity: .35; } }
+  @keyframes float { 50% { transform: translateY(-8px); } }
+  @keyframes blink { to { visibility: hidden; } }
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Ícone do SoloUp desenhado em SVG (mesmo desenho do ícone do app) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="soft-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <symbol id="logo" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="36" fill="none" stroke="#38bdf8" stroke-width="5" filter="url(#soft-glow)"/>
+      <polyline points="34,46 50,32 66,46" fill="none" stroke="#ecf2ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" filter="url(#soft-glow)"/>
+      <polyline points="34,60 50,46 66,60" fill="none" stroke="#8b5cf6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" filter="url(#soft-glow)"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#topo" aria-label="SoloUp, início">
+      <svg width="36" height="36"><use href="#logo"/></svg>
+      <span>SOLOUP</span>
+    </a>
+    <nav class="nav-links" aria-label="Seções">
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#comunidade">Comunidade</a>
+      <a href="#acesso">Acesso</a>
+    </nav>
+    <a class="btn btn-primary" href="#acesso">Quero acesso</a>
+  </div>
+</header>
+
+<main id="topo">
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <span class="alert-chip sys"><span class="dot"></span>[ Aviso do Sistema ] Você foi selecionado</span>
+        <h1>Suba de nível<br>na <span class="glow">vida real.</span></h1>
+        <p class="lead">O SoloUp transforma o seu treino, os seus estudos e os seus hábitos em <strong>missões diárias</strong>. Cada missão cumprida vale XP. Cada dia conta. Você desperta no <strong class="gold">Rank E</strong>, e até onde você chega depende só de você.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#acesso">Despertar agora</a>
+          <a class="btn btn-ghost" href="#como-funciona">Ver como funciona</a>
+        </div>
+        <div class="hero-meta">
+          <span><b>Android</b>, <b>iPhone</b> e <b>PC</b></span>
+          <span><b>Pagamento único</b>, sem mensalidade</span>
+          <span><b>7 dias</b> de garantia</span>
+        </div>
+      </div>
+
+      <div class="phone-stage" aria-label="Ilustração do Painel do Caçador no app">
+        <div class="phone">
+          <div class="screen">
+            <div class="sys">[ Painel do Caçador ]</div>
+            <div class="hunter">
+              <div>
+                <div class="name">NÍVEL 4</div>
+                <div class="title">Caçador Novato</div>
+              </div>
+              <div class="rank-badge"><div>E<small>RANK</small></div></div>
+            </div>
+            <div class="xp">
+              <div class="xp-row"><span>XP</span><span>410 / 500</span></div>
+              <div class="bar"><i data-fill="82%"></i></div>
+            </div>
+            <div class="stats">
+              <div class="stat"><b>14</b><span>STR</span></div>
+              <div class="stat"><b>12</b><span>AGI</span></div>
+              <div class="stat"><b>13</b><span>VIT</span></div>
+              <div class="stat"><b>11</b><span>INT</span></div>
+              <div class="stat"><b>10</b><span>PER</span></div>
+            </div>
+            <div class="streak"><span>STREAK</span><b>🔥 12 DIAS</b></div>
+            <div class="sys" style="text-align:left">Missões diárias</div>
+            <div class="quest">
+              <div class="q-top"><span class="q-title">Treino de Força: Flexões</span><span class="q-xp">+150 XP</span></div>
+              <span class="q-cat">FORÇA [STR]</span>
+              <div class="q-prog"><span>60 / 100 repetições</span><span class="mini-btn">✓ CONCLUIR</span></div>
+            </div>
+            <div class="quest done">
+              <div class="q-top"><span class="q-title">Leitura Técnica ou Literária</span><span class="q-xp">+150 XP</span></div>
+              <span class="q-cat">INTELIGÊNCIA [INT]</span>
+              <div class="q-prog"><span>25 / 25 páginas</span><b>COMPLETO</b></div>
+            </div>
+            <div class="quest">
+              <div class="q-top"><span class="q-title">Corrida de Resistência</span><span class="q-xp">+200 XP</span></div>
+              <span class="q-cat">AGILIDADE [AGI]</span>
+              <div class="q-prog"><span>3 / 5 km</span><span class="mini-btn">✓ CONCLUIR</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="toast" role="img" aria-label="Notificação: subiu de nível e desbloqueou o Rank D">
+          <div class="sys">[ Sistema ]</div>
+          <p>LEVEL UP! <span class="gold">Nível 5</span></p>
+          <small>Rank D desbloqueado: Caçador em Ascensão</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROBLEMA ===================== -->
+  <section>
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="sys">[ Diagnóstico ]</span>
+        <h2>Motivação acaba.<br><span class="glow">Sistema fica.</span></h2>
+        <p class="lead">Você começa a semana com tudo e na quarta já largou. Não é falta de força de vontade: é falta de um sistema que te puxe de volta todo dia. Os jogos já resolveram isso com progresso, recompensa e sequência. O SoloUp usa a mesma lógica na sua vida real.</p>
+      </div>
+      <div class="contrast">
+        <div class="window bad reveal">
+          <h3>Sem um sistema</h3>
+          <ul>
+            <li>Metas soltas que ninguém cobra</li>
+            <li>Progresso invisível, então parece que nada muda</li>
+            <li>Um dia ruim vira uma semana perdida</li>
+            <li>Vícios que voltam sem você perceber</li>
+          </ul>
+        </div>
+        <div class="window good reveal">
+          <h3>Com o SoloUp</h3>
+          <ul>
+            <li>Missões diárias claras, com meta e recompensa</li>
+            <li>XP, nível e atributos que mostram a sua evolução</li>
+            <li>Sequência de dias 🔥 que você não quer quebrar</li>
+            <li>Cronômetro diário: todo dia o Sistema cobra de novo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== COMO FUNCIONA ===================== -->
+  <section id="como-funciona">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="sys">[ Protocolo de despertar ]</span>
+        <h2>Como funciona</h2>
+      </div>
+      <div class="steps">
+        <div class="window step reveal">
+          <span class="num">01</span>
+          <h3>Desperte o seu Caçador</h3>
+          <p>Crie a sua conta com o código de acesso e escolha o seu caminho:</p>
+          <div class="goals">
+            <div class="goal"><b>🥋 Condicionamento físico</b><span>Flexões, abdominais, agachamentos e corrida</span></div>
+            <div class="goal"><b>🧠 Estudos e concursos</b><span>Deep work, leitura técnica e questões</span></div>
+            <div class="goal"><b>🧘 Saúde e disciplina</b><span>Hidratação, meditação e sono</span></div>
+            <div class="goal"><b>⚡ Caçador híbrido</b><span>Corpo, intelecto e hábitos</span></div>
+          </div>
+        </div>
+        <div class="window step reveal">
+          <span class="num">02</span>
+          <h3>Cumpra as missões diárias</h3>
+          <p>O Sistema entrega as missões do seu objetivo todo dia, e você ainda cria as suas. Concluiu, ganhou XP. Subiu de nível, ganha pontos para distribuir entre <strong>Força, Agilidade, Vitalidade, Inteligência e Percepção</strong>.</p>
+        </div>
+        <div class="window step reveal">
+          <span class="num">03</span>
+          <h3>Suba de rank</h3>
+          <p>Todo Caçador desperta no Rank E. Com o nível, você sobe até o Rank S, e o rank nunca é rebaixado. Cada rank tem o seu título.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RANKS ===================== -->
+  <section>
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="sys">[ Hierarquia dos Caçadores ]</span>
+        <h2>Do Rank E à <span class="gold">Lenda</span></h2>
+        <p class="lead">Seis ranks. Seis títulos. Uma pergunta: até onde você vai?</p>
+      </div>
+      <div class="ladder reveal">
+        <div class="rung you"><span class="letter">E</span><span class="lvl">NÍVEL 1</span><span class="ttl">Caçador Novato</span></div>
+        <div class="rung"><span class="letter">D</span><span class="lvl">NÍVEL 5</span><span class="ttl">Caçador em Ascensão</span></div>
+        <div class="rung"><span class="letter">C</span><span class="lvl">NÍVEL 10</span><span class="ttl">Caçador Intermediário</span></div>
+        <div class="rung"><span class="letter">B</span><span class="lvl">NÍVEL 20</span><span class="ttl">Caçador Veterano</span></div>
+        <div class="rung"><span class="letter">A</span><span class="lvl">NÍVEL 35</span><span class="ttl">Caçador de Elite</span></div>
+        <div class="rung"><span class="letter">S</span><span class="lvl">NÍVEL 50</span><span class="ttl">Lenda do SoloUp</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RECURSOS ===================== -->
+  <section id="recursos">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="sys">[ Módulos do Sistema ]</span>
+        <h2>Tudo o que o seu Caçador precisa</h2>
+      </div>
+      <div class="features">
+        <article class="window feature reveal">
+          <div class="ico">📊</div>
+          <span class="sys">[ Painel do Caçador ]</span>
+          <h3>Status em tempo real</h3>
+          <p>Nível, rank, título, barra de XP e os 5 atributos. A sua evolução, visível todo dia.</p>
+        </article>
+        <article class="window feature reveal">
+          <div class="ico">⚔️</div>
+          <span class="sys">[ Missões diárias ]</span>
+          <h3>Metas que viram XP</h3>
+          <p>Missões prontas para o seu objetivo, mais as que você mesmo cria. O XP é calculado no servidor, então ninguém trapaceia no ranking.</p>
+        </article>
+        <article class="window feature reveal">
+          <div class="ico">⚠️</div>
+          <span class="sys">[ Zona de penalidade ]</span>
+          <h3>Missão de sobrevivência</h3>
+          <p>Todo dia, um desafio rápido contra o relógio: polichinelos, água e foco. Cumpriu, ganhou +100 XP.</p>
+        </article>
+        <article class="window feature reveal">
+          <div class="ico">⛓️</div>
+          <span class="sys">[ Quebra de maldições ]</span>
+          <h3>Vença os seus vícios</h3>
+          <p>Cadastre o que quer abandonar e acompanhe os dias limpos e o seu melhor recorde. Cada dia vencido vale XP. Teve recaída? Tente de novo.</p>
+        </article>
+        <article class="window feature reveal">
+          <div class="ico">📚</div>
+          <span class="sys">[ Arquivos do Sistema ]</span>
+          <h3>Grimório do Conhecimento</h3>
+          <p>Livros, podcasts e vídeos organizados por atributo, para evoluir corpo e mente.</p>
+        </article>
+        <article class="window feature reveal">
+          <div class="ico">🛡️</div>
+          <span class="sys">[ Guilda ]</span>
+          <h3>Ranking dos Caçadores</h3>
+          <p>Veja os 5 Caçadores com mais XP e dispute o topo. Acesso à comunidade no Discord.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ZONA DE PENALIDADE ===================== -->
+  <section>
+    <div class="wrap penalty-wrap">
+      <div class="section-head reveal" style="margin:0">
+        <span class="sys" style="color:var(--red)">[ Contra o relógio ]</span>
+        <h2>O relógio <span style="color:var(--red)">não para.</span></h2>
+        <p class="lead">As missões diárias correm contra um cronômetro de 24 horas. Quando o dia vira, o Sistema reinicia e cobra de novo.</p>
+        <p class="lead">E todo dia a Zona de Penalidade traz uma missão de sobrevivência. Não é castigo: é o empurrão que faltava para você não largar.</p>
+      </div>
+      <div class="window penalty reveal" role="img" aria-label="Ilustração do aviso da Zona de Penalidade">
+        <span class="sys">⚠️ [ Aviso do Sistema ] ⚠️</span>
+        <h3>Zona de Penalidade</h3>
+        <span class="quote">« SOBREVIVA NA ZONA DE PENALIDADE »</span>
+        <ul>
+          <li>🔥 Faça 50 polichinelos ou 20 flexões imediatamente.</li>
+          <li>🔥 Beba 500 ml de água.</li>
+          <li>🔥 Respire fundo e recupere o foco para o próximo ciclo.</li>
+        </ul>
+        <span class="sys" style="color:var(--gold)">Recompensa: +100 XP · uma vez por dia</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PLATAFORMAS ===================== -->
+  <section>
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="sys">[ Compatibilidade ]</span>
+        <h2>No celular e no computador</h2>
+        <p class="lead">Uma conta só, o mesmo progresso em todos os aparelhos.</p>
+      </div>
+      <div class="platforms">
+        <div class="window platform reveal"><span class="big">🤖</span><h3>Android</h3><p>App instalado direto pelo nosso link. Não precisa da Play Store.</p></div>
+        <div class="window platform reveal"><span class="big">🍎</span><h3>iPhone</h3><p>Abra no Safari e adicione à Tela de Início. Fica com cara de app.</p></div>
+        <div class="window platform reveal"><span class="big">💻</span><h3>PC</h3><p>Use no navegador ou instale pelo Chrome ou Edge.</p></div>
+      </div>
+      <div class="trust reveal">
+        <span>Funciona sem internet e sincroniza depois</span>
+        <span>Sem anúncios</span>
+        <span>No ranking aparecem só o nome de Caçador, o nível e o XP</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== COMUNIDADE ===================== -->
+  <section id="comunidade">
+    <div class="wrap community">
+      <div class="section-head reveal" style="margin:0">
+        <span class="sys" style="color:#8ea1ff">[ Guilda SoloUp ]</span>
+        <h2>Você não evolui sozinho</h2>
+        <p class="lead">A comunidade do SoloUp no Discord é aberta e gratuita. Gente que quer melhorar no corpo, na mente e na carreira, trocando ideia todo dia. Quem tem o app ganha o cargo de Caçador e canais exclusivos.</p>
+        <div><a class="btn btn-discord" href="https://discord.gg/aWNqu3ru9B" target="_blank" rel="noopener">Entrar no Discord</a></div>
+      </div>
+      <div class="channels reveal">
+        <div class="channel">🧠 <b>desenvolvimento-pessoal</b>&nbsp;· hábitos e mentalidade</div>
+        <div class="channel">📚 <b>leitura</b>&nbsp;· livros e resumos</div>
+        <div class="channel">💼 <b>negócios-e-marketing</b>&nbsp;· empreender e vender</div>
+        <div class="channel">💻 <b>programação</b>&nbsp;· código e tecnologia</div>
+        <div class="channel">🏆 <b>conquistas</b>&nbsp;· mostre o seu rank</div>
+        <div class="channel">🔊 <b>Estudo e foco</b>&nbsp;· call para estudar junto</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== OFERTA ===================== -->
+  <section id="acesso">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="sys">[ Acesso de Caçador ]</span>
+        <h2>Comece a sua jornada</h2>
+      </div>
+      <div class="window offer reveal">
+        <span class="sys" style="text-align:center">Pagamento único · sem mensalidade</span>
+            <div class="price"><span class="cur">R$</span><span class="val">14,89</span></div>
+        <p class="note">Um código de acesso pessoal. Uma conta. Todos os módulos.</p>
+        <ul>
+          <li>App para Android e versão web para iPhone e PC</li>
+          <li>Missões diárias, ranks de E a S, Zona de Penalidade, Quebra de Maldições, Grimório e Guilda</li>
+          <li>Atualizações do app</li>
+          <li>Cargo de Caçador no Discord, com canais exclusivos e suporte</li>
+        </ul>
+        <div class="how-buy">
+          <div><b>1. Discord</b>Entre na comunidade</div>
+          <div><b>2. Pix</b>Chame o Dono no privado</div>
+          <div><b>3. Código</b>Receba o seu código e os links</div>
+        </div>
+        <a class="btn btn-primary" href="https://discord.gg/aWNqu3ru9B" target="_blank" rel="noopener">Quero acesso</a>
+        <div class="guarantee">
+          <span class="seal">🛡️</span>
+          <span><strong>Garantia de 7 dias.</strong> Não gostou? Peça o reembolso integral em até 7 dias após a compra.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <section>
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="sys">[ Dúvidas frequentes ]</span>
+        <h2>Perguntas</h2>
+      </div>
+      <div class="faq reveal">
+        <details>
+          <summary>Preciso pagar todo mês?</summary>
+          <p>Não. É um pagamento único, que gera o seu código de acesso pessoal.</p>
+        </details>
+        <details>
+          <summary>Funciona no iPhone?</summary>
+          <p>Sim. No iPhone você usa a versão web: abra o link no Safari e toque em Compartilhar → Adicionar à Tela de Início. O progresso é o mesmo do Android e do PC.</p>
+        </details>
+        <details>
+          <summary>Como instalo no Android?</summary>
+          <p>Você baixa o app pelo nosso link, abre o arquivo e permite a instalação. Não precisa da Play Store. O passo a passo chega junto com o seu código.</p>
+        </details>
+        <details>
+          <summary>Funciona sem internet?</summary>
+          <p>Sim. As missões concluídas ficam guardadas no aparelho e são enviadas quando a conexão voltar.</p>
+        </details>
+        <details>
+          <summary>Posso usar o mesmo código em mais de uma conta?</summary>
+          <p>Não. Cada código cria uma única conta e vale uma vez só. Não compre códigos de terceiros.</p>
+        </details>
+        <details>
+          <summary>E se eu não gostar?</summary>
+          <p>Você tem 7 dias para pedir o reembolso integral, como garante o Código de Defesa do Consumidor.</p>
+        </details>
+        <details>
+          <summary>Preciso entrar no Discord?</summary>
+          <p>Só para comprar e receber o código. Depois disso, o app funciona sozinho. Mas a comunidade é grátis e vale a visita.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CTA FINAL ===================== -->
+  <section>
+    <div class="wrap">
+      <div class="window final reveal">
+        <svg width="76" height="76" aria-hidden="true"><use href="#logo"/></svg>
+        <h2>O Rank E é só o <span class="glow">começo.</span></h2>
+        <p class="lead">Daqui a 30 dias você vai estar no mesmo lugar ou alguns níveis acima. A escolha é sua.</p>
+        <a class="btn btn-primary" href="#acesso">Despertar agora</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="row">
+      <a class="brand" href="#topo"><svg width="28" height="28"><use href="#logo"/></svg><span>SOLOUP</span></a>
+      <nav aria-label="Links">
+        <a href="https://soloup-weld.vercel.app">Já tenho código: entrar no app</a>
+        <a href="https://discord.gg/aWNqu3ru9B" target="_blank" rel="noopener">Discord</a>
+        <a href="#">Termos e Privacidade</a>
+      </nav>
+    </div>
+    <p class="disclaimer">O SoloUp não é um serviço médico, de educação física ou de saúde mental. As missões são sugestões gerais. Antes de começar exercícios, consulte um profissional de saúde.</p>
+    <p>© 2026 SoloUp. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<script>
+  // Revela as seções ao rolar e enche a barra de XP quando ela aparece.
+  (function () {
+    var els = document.querySelectorAll('.reveal');
+    var bars = document.querySelectorAll('.bar > i[data-fill]');
+    var fill = function () { bars.forEach(function (b) { b.style.width = b.getAttribute('data-fill'); }); };
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (e) { e.classList.add('in'); });
+      fill();
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        en.target.classList.add('in');
+        io.unobserve(en.target);
+      });
+    }, { threshold: 0.15 });
+    els.forEach(function (e) { io.observe(e); });
+    // A barra de XP do topo enche logo depois que a página abre.
+    setTimeout(fill, 400);
+  })();
+</script>
+</body>
+</html>
